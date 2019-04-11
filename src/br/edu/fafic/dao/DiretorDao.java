@@ -22,7 +22,6 @@ public class DiretorDao {
     private final Connection con = ConnectionFactory.getConnectionFactory().getConnection();
 
     public void cadastraDiretor(Diretor diretor) {
-        //String sql = "insert into diretor values(default,?,?,?,?,?,?,?,?,?,?,?)";
         StringBuilder sql = new StringBuilder();
         sql.append(" INSERT INTO ");
         sql.append("   diretor ");
@@ -34,30 +33,22 @@ public class DiretorDao {
         sql.append("   ?, ");
         sql.append("   ?, ");
         sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?  ");
+        sql.append("   ? ");
         sql.append("   ); ");
         PreparedStatement ps;
         try {
+        	Endereco endereco = new Endereco();
             ps = con.prepareStatement(sql.toString());
             ps.setString(1, diretor.getNome());
             ps.setString(2, diretor.getTitulacao());
             ps.setString(3, diretor.getSexo());
             ps.setString(4, diretor.getCpf());
-            ps.setString(5, diretor.getLogradouro());
-            ps.setString(6, diretor.getNumero());
-            ps.setString(7, diretor.getBairro());
-            ps.setString(8, diretor.getComplemento());
-            ps.setString(9, diretor.getCidade());
-            ps.setString(10, diretor.getCep());
+            ps.setString(5, diretor.getEndereco().getLogradouro());
+            ps.setString(6, diretor.getEndereco().getNumero());
+            ps.setString(7, diretor.getEndereco().getBairro());
+            ps.setString(8, diretor.getEndereco().getComplemento());
+            ps.setString(9, diretor.getEndereco().getCidade());
+            ps.setString(10, diretor.getEndereco().getCep());
             ps.setString(11, diretor.getTelefone());
             ps.setString(12, diretor.getEmail());
             ps.setString(13, diretor.getUsuario());
