@@ -7,6 +7,8 @@ package br.edu.fafic.dao;
 
 import br.edu.fafic.connection.ConnectionFactory;
 import br.edu.fafic.model.Diretor;
+import br.edu.fafic.model.Endereco;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,10 +39,9 @@ public class DiretorDao {
         sql.append("   ); ");
         PreparedStatement ps;
         try {
-        	Endereco endereco = new Endereco();
+        	
             ps = con.prepareStatement(sql.toString());
             ps.setString(1, diretor.getNome());
-            ps.setString(2, diretor.getTitulacao());
             ps.setString(3, diretor.getSexo());
             ps.setString(4, diretor.getCpf());
             ps.setString(5, diretor.getEndereco().getLogradouro());
