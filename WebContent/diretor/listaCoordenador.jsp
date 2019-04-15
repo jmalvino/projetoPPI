@@ -46,11 +46,11 @@
         
         <%
                 	DiretorDao dao = new DiretorDao();
-                            List<Pessoa> pessoas = dao.getLoginByPerfil("coordenador");
+//                             List<Pessoa> pessoas = dao.getLoginByPerfil("coordenador");
                 %>
 
 
-        <div class="panel panel-primary">
+	<div class="panel panel-primary">
             <table class="table table-striped table-condensed">
                 <tr>
                     <td>Id</td>
@@ -70,29 +70,29 @@
                     <td>Perfil</td>
                     <td colspan="2" style="text-align: center;">Ação</td>
                 </tr>
-                <%for (Pessoa pessoa : pessoas) {%>
-                <tr>
-                    <td><%=pessoa.getIdPessoa()%></td>
-                    <td><%=pessoa.getNome()%></td>
-                    <td><%=pessoa.getSexo()%></td>
-                    <td><%=pessoa.getCpf()%></td>
-                    <td><%=pessoa.getLogradouro()%></td>
-                    <td><%=pessoa.getNumero()%></td>
-                    <td><%=pessoa.getBairro()%></td>
-                    <td><%=pessoa.getComplemento()%></td>
-                    <td><%=pessoa.getCidade()%></td>
-                    <td><%=pessoa.getCep()%></td>
-                    <td><%=pessoa.getTelefone()%></td>
-                    <td><%=pessoa.getEmail()%></td>
-                    <td><%=pessoa.getUsuario()%></td>
-                    <td><%=pessoa.getSenha()%></td>
-                    <td><%=pessoa.getPerfil()%></td>
-                    <td><a  href="../edit.jsp?id_pessoa=<%=pessoa.getIdPessoa()%>"><img src="../imagens/edit.png"/></a></td>
-                    <td><a  href="javascript://" onclick="excluir(<%=pessoa.getIdPessoa()%>, '<%=pessoa.getNome()%>')"><img src="../imagens/lixo.png"/></a></td>
-                    
-                </tr>
-                <%}%>
-            </table>
+			<%--                 <%for (Pessoa pessoa : pessoas) {%> --%>
+			<!--                 <tr> -->
+			<%--                     <td><%=pessoa.getIdPessoa()%></td> --%>
+			<%--                     <td><%=pessoa.getNome()%></td> --%>
+			<%--                     <td><%=pessoa.getSexo()%></td> --%>
+			<%--                     <td><%=pessoa.getCpf()%></td> --%>
+			<%--                     <td><%=pessoa.getLogradouro()%></td> --%>
+			<%--                     <td><%=pessoa.getNumero()%></td> --%>
+			<%--                     <td><%=pessoa.getBairro()%></td> --%>
+			<%--                     <td><%=pessoa.getComplemento()%></td> --%>
+			<%--                     <td><%=pessoa.getCidade()%></td> --%>
+			<%--                     <td><%=pessoa.getCep()%></td> --%>
+			<%--                     <td><%=pessoa.getTelefone()%></td> --%>
+			<%--                     <td><%=pessoa.getEmail()%></td> --%>
+			<%--                     <td><%=pessoa.getUsuario()%></td> --%>
+			<%--                     <td><%=pessoa.getSenha()%></td> --%>
+			<%--                     <td><%=pessoa.getPerfil()%></td> --%>
+			<%--                     <td><a  href="../edit.jsp?id_pessoa=<%=pessoa.getIdPessoa()%>"><img src="../imagens/edit.png"/></a></td> --%>
+			<%--                     <td><a  href="javascript://" onclick="excluir(<%=pessoa.getIdPessoa()%>, '<%=pessoa.getNome()%>')"><img src="../imagens/lixo.png"/></a></td> --%>
+
+			<!--                 </tr> -->
+			<%--                 <%}%> --%>
+		</table>
         </div>
     </body>
 </html>

@@ -5,11 +5,8 @@
  */
 package br.edu.fafic.dao;
 
-import br.edu.fafic.connection.ConnectionFactory;
-import br.edu.fafic.model.Diretor;
-import br.edu.fafic.model.Endereco;
-
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,372 +15,279 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import br.edu.fafic.connection.ConnectionFactory;
+import br.edu.fafic.model.Diretor;
+import br.edu.fafic.model.Endereco;
+import br.edu.fafic.model.Login;
+import br.edu.fafic.model.Pessoa;
 
 public class DiretorDao {
 
-    private final Connection con = ConnectionFactory.getConnectionFactory().getConnection();
+	public static Diretor cadastraDiretor(Diretor diretor, Endereco endereco, Login login) {
 
-    public void cadastraDiretor(Diretor diretor) {
-        StringBuilder sql = new StringBuilder();
-        sql.append(" INSERT INTO ");
-        sql.append("   diretor ");
-        sql.append(" VALUES ");
-        sql.append("   ( ");
-        sql.append("   default, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ?, ");
-        sql.append("   ? ");
-        sql.append("   ); ");
-        PreparedStatement ps;
-        try {
-        	
-            ps = con.prepareStatement(sql.toString());
-            ps.setString(1, diretor.getNome());
-            ps.setString(3, diretor.getSexo());
-            ps.setString(4, diretor.getCpf());
-            ps.setString(5, diretor.getEndereco().getLogradouro());
-            ps.setString(6, diretor.getEndereco().getNumero());
-            ps.setString(7, diretor.getEndereco().getBairro());
-            ps.setString(8, diretor.getEndereco().getComplemento());
-            ps.setString(9, diretor.getEndereco().getCidade());
-            ps.setString(10, diretor.getEndereco().getCep());
-            ps.setString(11, diretor.getTelefone());
-            ps.setString(12, diretor.getEmail());
-            ps.setString(13, diretor.getUsuario());
-            ps.setString(14, diretor.getSenha());
-            ps.setString(15, diretor.getPerfil());
-            ps.executeUpdate();
-            ps.close();
-            con.close();
+		final Connection con = ConnectionFactory.getConnectionFactory().getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-        } catch (SQLException ex) {
-            Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
+		try {
 
-    }
+			StringBuilder sql = new StringBuilder();
 
-    public List<Diretor> getAll() {
-        List<Diretor> pessoas = new ArrayList();
-        //String sql = "select * from pessoa";
-        Diretor pessoa;
-        StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT ");
-        sql.append("   * ");
-        sql.append(" FROM ");
-        sql.append("   pessoa ");
+			PessoaDao.cadastraPessoa(diretor, endereco, login);
 
-        PreparedStatement ps;
-        ResultSet rs;
-        try {
-            ps = con.prepareStatement(sql.toString());
+			sql.append("\n INSERT INTO ");
+			sql.append("\n   diretor ");
+			sql.append("\n VALUES ");
+			sql.append("\n   ( ");
+			sql.append("\n   ?, ");// cod
+			sql.append("\n   ?, ");// titulacao
+			sql.append("\n   ?, ");// salario
+			sql.append("\n   ?, ");// dataAdm
+			sql.append("\n   default ");// excluido
+			sql.append("\n   ); ");// fim insert diretor
+//			sql.append("INSERT INTO diretor(cod_diretor, titulacao, salario, data_admissao, excluido) "
+//					+ "VALUES (?, ?, ?, '?', default);");
+			ps = con.prepareStatement(sql.toString());
 
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                pessoa = new Diretor();
-                pessoa.setIdPessoa(rs.getLong("id_pessoa"));
-                pessoa.setNome(rs.getString("nome"));
-                pessoa.setTitulacao(rs.getString("titulacao"));
-                pessoa.setSexo(rs.getString("sexo"));
-                pessoa.setCpf(rs.getString("cpf"));
-                pessoa.setLogradouro(rs.getString("logradouro"));
-                pessoa.setNumero(rs.getString("numero"));
-                pessoa.setBairro((rs.getString("bairro")));
-                pessoa.setComplemento((rs.getString("complemento")));
-                pessoa.setCidade((rs.getString("cidade")));
-                pessoa.setCep((rs.getString("cep")));
-                pessoa.setTelefone((rs.getString("telefone")));
-                pessoa.setEmail((rs.getString("email")));
-                pessoa.setUsuario((rs.getString("usuario")));
-                pessoa.setSenha((rs.getString("senha")));
-                pessoa.setPerfil((rs.getString("perfil")));
+			diretor.setCodDiretor(PessoaDao.maximoCodPessoa());
+			ps.setLong(1, diretor.getCodDiretor());
+			ps.setString(2, diretor.getTitulacao());
+			ps.setDouble(3, diretor.getSalario());
+			ps.setDate(4, diretor.getDataAdmissao());
 
-                pessoas.add(pessoa);
-            }
-            ps.close();
-            con.close();
+			ps.executeUpdate();
 
-        } catch (SQLException ex) {
-            Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return pessoas;
-    }
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
+		} finally {
+			ConnectionFactory.closeConnection(con, ps, rs);
+		}
 
-    public Diretor getLoginById(Long idPessoa) {
-        Diretor pessoa = new Diretor();
-        StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT ");
-        sql.append("   * ");
-        sql.append(" FROM ");
-        sql.append("   pessoa ");
-        sql.append(" WHERE ");
-        sql.append("   id_pessoa = ? ");
-        sql.append(" ; ");
-        //String sql = "select * from pessoa where id=?";
-        PreparedStatement ps;
-        ResultSet rs;
-        try {
-            ps = con.prepareStatement(sql.toString());
-            ps.setLong(1, idPessoa);
-            ps.executeQuery();
+		return diretor;
+	}
 
-            rs = ps.getResultSet();
-            while (rs.next()) {
-                pessoa.setIdPessoa(rs.getLong("id_pessoa"));
-                pessoa.setNome(rs.getString("nome"));
-                pessoa.setTitulacao(rs.getString("titulacao"));
-                pessoa.setSexo(rs.getString("sexo"));
-                pessoa.setCpf(rs.getString("cpf"));
-                pessoa.setLogradouro(rs.getString("logradouro"));
-                pessoa.setNumero(rs.getString("numero"));
-                pessoa.setBairro((rs.getString("bairro")));
-                pessoa.setComplemento((rs.getString("complemento")));
-                pessoa.setCidade((rs.getString("cidade")));
-                pessoa.setCep((rs.getString("cep")));
-                pessoa.setTelefone((rs.getString("telefone")));
-                pessoa.setEmail((rs.getString("email")));
-                pessoa.setUsuario((rs.getString("usuario")));
-                pessoa.setSenha((rs.getString("senha")));
-                pessoa.setPerfil((rs.getString("perfil")));
+	public static List<Diretor> getAll() {
 
-            }
-            ps.close();
-            con.close();
-            rs.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
+		final Connection con = ConnectionFactory.getConnectionFactory().getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<Diretor> diretores = new ArrayList<Diretor>();
 
-        return pessoa;
-    }
-    
-   
-    
-    public List<Diretor> getLoginByPerfil(String perfilPessoa) {
-        Diretor pessoa;
-        List<Diretor> pessoas = new ArrayList<>();
-        StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT ");
-        sql.append("   * ");
-        sql.append(" FROM ");
-        sql.append("   pessoa ");
-        sql.append(" WHERE ");
-        sql.append("   perfil = ? ");
-        sql.append(" ; ");
-        //String sql = "select * from pessoa where id=?";
-        PreparedStatement ps;
-        ResultSet rs;
-        try {
-            ps = con.prepareStatement(sql.toString());
-            ps.setString(1, perfilPessoa);
-            ps.executeQuery();
+		try {
 
-            rs = ps.getResultSet();
-            while (rs.next()) {
-                pessoa = new Diretor();
-                pessoa.setIdPessoa(rs.getLong("id_pessoa"));
-                pessoa.setNome(rs.getString("nome"));
-                pessoa.setTitulacao(rs.getString("titulacao"));
-                pessoa.setSexo(rs.getString("sexo"));
-                pessoa.setCpf(rs.getString("cpf"));
-                pessoa.setLogradouro(rs.getString("logradouro"));
-                pessoa.setNumero(rs.getString("numero"));
-                pessoa.setBairro((rs.getString("bairro")));
-                pessoa.setComplemento((rs.getString("complemento")));
-                pessoa.setCidade((rs.getString("cidade")));
-                pessoa.setCep((rs.getString("cep")));
-                pessoa.setTelefone((rs.getString("telefone")));
-                pessoa.setEmail((rs.getString("email")));
-                pessoa.setUsuario((rs.getString("usuario")));
-                pessoa.setSenha((rs.getString("senha")));
-                pessoa.setPerfil((rs.getString("perfil")));
-                pessoas.add(pessoa);
-            }
-            ps.close();
-            con.close();
-            rs.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
+			StringBuilder sql = new StringBuilder();
+			sql.append("\n SELECT ");
+			sql.append("\n   * ");
+			sql.append("\n FROM ");
+			sql.append("\n   diretor d");
+			sql.append("\n INNER JOIN ");
+			sql.append("\n   pessoa p");
+			sql.append("\n ON ");
+			sql.append("\n  d.cod_diretor = p.cod_pessoa ");
+			sql.append("\n INNER JOIN ");
+			sql.append("\n   endereco e");
+			sql.append("\n ON ");
+			sql.append("\n  p.cod_endereco = e.cod_endereco ");
+			sql.append("\n INNER JOIN ");
+			sql.append("\n   login l");
+			sql.append("\n ON ");
+			sql.append("\n  p.cod_login = l.cod_login ");
+			sql.append("\n  AND p.excluido = false ");
+			sql.append("\n ORDER BY ");
+			sql.append("\n   p.nome ");
 
-        return pessoas;
-    }
-    
-    public List<Diretor> getLoginByPerfilProfessor(String perfilPessoa) {
-        Diretor pessoa;
-        List<Diretor> pessoas = new ArrayList<>();
-        StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT ");
-        sql.append("   * ");
-        sql.append(" FROM ");
-        sql.append("   pessoa ");
-        sql.append(" WHERE ");
-        sql.append("   perfil = ? ");
-        sql.append(" ; ");
-        //String sql = "select * from pessoa where id=?";
-        PreparedStatement ps;
-        ResultSet rs;
-        try {
-            ps = con.prepareStatement(sql.toString());
-            ps.setString(1, perfilPessoa);
-            ps.executeQuery();
+			ps = con.prepareStatement(sql.toString());
+			rs = ps.executeQuery();
 
-            rs = ps.getResultSet();
-            while (rs.next()) {
-                pessoa = new Diretor();
-                pessoa.setIdPessoa(rs.getLong("id_pessoa"));
-                pessoa.setNome(rs.getString("nome"));
-                pessoa.setTitulacao(rs.getString("titulacao"));
-                pessoa.setSexo(rs.getString("sexo"));
-                pessoa.setCpf(rs.getString("cpf"));
-                pessoa.setLogradouro(rs.getString("logradouro"));
-                pessoa.setNumero(rs.getString("numero"));
-                pessoa.setBairro((rs.getString("bairro")));
-                pessoa.setComplemento((rs.getString("complemento")));
-                pessoa.setCidade((rs.getString("cidade")));
-                pessoa.setCep((rs.getString("cep")));
-                pessoa.setTelefone((rs.getString("telefone")));
-                pessoa.setEmail((rs.getString("email")));
-                pessoa.setUsuario((rs.getString("usuario")));
-                pessoa.setSenha((rs.getString("senha")));
-                pessoa.setPerfil((rs.getString("perfil")));
-                pessoas.add(pessoa);
-            }
-            ps.close();
-            con.close();
-            rs.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
+			while (rs.next()) {
 
-        return pessoas;
-    }
-    
+				Diretor diretor = new Diretor();
+				Endereco endereco = new Endereco();
+				Login login = new Login();
+				diretor.setCodDiretor(rs.getLong("cod_diretor"));
+				diretor.setNome(rs.getString("nome"));
+				diretor.setSexo(rs.getString("sexo"));
+				diretor.setCpf(rs.getString("cpf"));
+				diretor.setRg(rs.getString("rg"));
+				endereco.setLogradouro(rs.getString("logradouro"));
+				endereco.setNumero(rs.getString("numero"));
+				endereco.setBairro((rs.getString("bairro")));
+				endereco.setComplemento((rs.getString("complemento")));
+				endereco.setCidade((rs.getString("cidade")));
+				endereco.setCep((rs.getString("cep")));
+				diretor.setEndereco(endereco);
+				login.setUsuario((rs.getString("usuario")));
+				login.setSenha((rs.getString("senha")));
+				login.setPerfil((rs.getString("perfil")));
+				diretor.setLogin(login);
+				diretor.setTelefone((rs.getString("telefone")));
+				diretor.setEmail((rs.getString("email")));
+				diretor.setTitulacao(rs.getString("titulacao"));
+				diretor.setSalario(Double.parseDouble(rs.getString("salario")));
+				diretor.setDataAdmissao(Date.valueOf((rs.getString("data_admissao"))));
 
-    public void updatePessoa(Diretor pessoa) {
-        // String sql = "update pessoa set nome = ?, email = ? where id = ?";
-        StringBuilder sql = new StringBuilder();
-        sql.append(" UPDATE ");
-        sql.append("   pessoa ");
-        sql.append(" SET ");
-        sql.append("   nome = ?, ");
-        sql.append("   titulacao = ?, ");
-        sql.append("   sexo = ?, ");
-        sql.append("   cpf = ?, ");
-        sql.append("   logradouro = ?, ");
-        sql.append("   numero = ?, ");
-        sql.append("   bairro = ?, ");
-        sql.append("   complemento = ?, ");
-        sql.append("   cidade = ?, ");
-        sql.append("   cep = ?, ");
-        sql.append("   telefone = ?, ");
-        sql.append("   email = ?, ");
-        sql.append("   usuario = ?, ");
-        sql.append("   senha = ?, ");
-        sql.append("   perfil = ? ");
-        sql.append(" WHERE ");
-        sql.append("   id_pessoa = ? ");
-        sql.append(" ; ");
+				diretores.add(diretor);
+			}
 
-        PreparedStatement ps;
-        try {
-            ps = con.prepareStatement(sql.toString());
-            ps.setString(1, pessoa.getNome());
-            ps.setString(2, pessoa.getTitulacao());
-            ps.setString(3, pessoa.getSexo());
-            ps.setString(4, pessoa.getCpf());
-            ps.setString(5, pessoa.getLogradouro());
-            ps.setString(6, pessoa.getNumero());
-            ps.setString(7, pessoa.getBairro());
-            ps.setString(8, pessoa.getComplemento());
-            ps.setString(9, pessoa.getCidade());
-            ps.setString(10, pessoa.getCep());
-            ps.setString(11, pessoa.getTelefone());
-            ps.setString(12, pessoa.getEmail());
-            ps.setString(13, pessoa.getUsuario());
-            ps.setString(14, pessoa.getSenha());
-            ps.setString(15, pessoa.getPerfil());
-            ps.setLong(16, pessoa.getIdPessoa());
-            ps.executeUpdate();
-            ps.close();
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
+		} finally {
+			ConnectionFactory.closeConnection(con, ps, rs);
+		}
+		return diretores;
+	}
 
-    public void excluir(Long idPessoa) {
-        // String sql = "delete from pessoa where id=?";
-        PreparedStatement ps;
+	public static Diretor getLoginById(Long codDiretor) {
 
-        StringBuilder sql = new StringBuilder();
-        sql.append(" DELETE ");
-        sql.append(" FROM ");
-        sql.append("   pessoa ");
-        sql.append(" WHERE ");
-        sql.append("   id_pessoa = ? ");
-        sql.append(" ; ");
-        try {
-            ps = con.prepareStatement(sql.toString());
-            ps.setLong(1, idPessoa);
-            ps.execute();
-            ps.close();
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
+		final Connection con = ConnectionFactory.getConnectionFactory().getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Diretor diretor = null;
 
-    }
+		try {
 
-    public Diretor autenticacao(String usuario, String senha) {
-        Diretor pessoa = null;
-        StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT ");
-        sql.append("   * ");
-        sql.append(" FROM ");
-        sql.append("   pessoa ");
-        sql.append(" WHERE ");
-        sql.append("   usuario = ? ");
-        sql.append("   and senha = ? ");
-        sql.append(" ; ");
+			StringBuilder sql = new StringBuilder();
+			sql.append(" SELECT ");
+			sql.append("   * ");
+			sql.append(" FROM ");
+			sql.append("   diretor ");
+			sql.append(" WHERE ");
+			sql.append("   cod_diretor = ? ");
+			sql.append("   AND excluido = false");
+			sql.append(" ; ");
 
-        // String sql = "select * from pessoa where nome = ? and email = ?";
-        PreparedStatement ps;
-        try {
-            ps = con.prepareStatement(sql.toString());
+			ps = con.prepareStatement(sql.toString());
+			ps.setLong(1, codDiretor);
+			ps.executeQuery();
 
-            ps.setString(1, usuario);
-            ps.setString(2, senha);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                pessoa = new Diretor();
-                pessoa.setIdPessoa(rs.getLong("id_pessoa"));
-                pessoa.setNome(rs.getString("nome"));
-                pessoa.setTitulacao(rs.getString("titulacao"));
-                pessoa.setSexo(rs.getString("sexo"));
-                pessoa.setCpf(rs.getString("cpf"));
-                pessoa.setLogradouro(rs.getString("logradouro"));
-                pessoa.setNumero(rs.getString("numero"));
-                pessoa.setBairro((rs.getString("bairro")));
-                pessoa.setComplemento((rs.getString("complemento")));
-                pessoa.setCidade((rs.getString("cidade")));
-                pessoa.setCep((rs.getString("cep")));
-                pessoa.setTelefone((rs.getString("telefone")));
-                pessoa.setEmail((rs.getString("email")));
-                pessoa.setUsuario((rs.getString("usuario")));
-                pessoa.setSenha((rs.getString("senha")));
-                pessoa.setPerfil((rs.getString("perfil")));
+			rs = ps.getResultSet();
 
-            }
+			while (rs.next()) {
 
-            ps.close();
-            con.close();
+				diretor = new Diretor();
+				Endereco endereco = new Endereco();
+				Login login = new Login();
+				diretor.setCodDiretor(rs.getLong("cod_diretor"));
+				diretor.setNome(rs.getString("nome"));
+				diretor.setSexo(rs.getString("sexo"));
+				diretor.setCpf(rs.getString("cpf"));
+				diretor.setRg(rs.getString("rg"));
+				endereco.setLogradouro(rs.getString("logradouro"));
+				endereco.setNumero(rs.getString("numero"));
+				endereco.setBairro((rs.getString("bairro")));
+				endereco.setComplemento((rs.getString("complemento")));
+				endereco.setCidade((rs.getString("cidade")));
+				endereco.setCep((rs.getString("cep")));
+				diretor.setEndereco(endereco);
+				login.setUsuario((rs.getString("usuario")));
+				login.setSenha((rs.getString("senha")));
+				login.setPerfil((rs.getString("perfil")));
+				diretor.setLogin(login);
+				diretor.setTelefone((rs.getString("telefone")));
+				diretor.setEmail((rs.getString("email")));
+				diretor.setTitulacao(rs.getString("titulacao"));
+				diretor.setSalario(Double.parseDouble(rs.getString("salario")));
+				diretor.setDataAdmissao(Date.valueOf((rs.getString("data_admissao"))));
+			}
 
-        } catch (SQLException ex) {
-            Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return pessoa;
-    }
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
+		} finally {
+			ConnectionFactory.closeConnection(con, ps, rs);
+		}
+
+		return diretor;
+	}
+
+	public static boolean updateDiretor(Diretor diretor) {
+
+		final Connection con = ConnectionFactory.getConnectionFactory().getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			StringBuilder sql = new StringBuilder();
+			sql.append(" UPDATE ");
+			sql.append("   diretor ");
+			sql.append(" SET ");
+			sql.append("   nome = ?, ");
+			sql.append("   sexo = ?, ");
+			sql.append("   cpf = ?, ");
+			sql.append("   logradouro = ?, ");
+			sql.append("   numero = ?, ");
+			sql.append("   bairro = ?, ");
+			sql.append("   complemento = ?, ");
+			sql.append("   cidade = ?, ");
+			sql.append("   cep = ?, ");
+			sql.append("   telefone = ?, ");
+			sql.append("   email = ?, ");
+			sql.append("   usuario = ?, ");
+			sql.append("   senha = ?, ");
+			sql.append("   perfil = ? ");
+			sql.append("   titulacao = ?, ");
+			sql.append(" WHERE ");
+			sql.append("   cod_diretor = ? ");
+			sql.append(" ; ");
+
+			ps = con.prepareStatement(sql.toString());
+			ps.setString(1, diretor.getNome());
+			ps.setString(2, diretor.getTitulacao());
+			ps.setString(3, diretor.getSexo());
+			ps.setString(4, diretor.getCpf());
+//			ps.setString(5, diretor.getLogradouro());
+//			ps.setString(6, diretor.getNumero());
+//			ps.setString(7, diretor.getBairro());
+//			ps.setString(8, diretor.getComplemento());
+//			ps.setString(9, diretor.getCidade());
+//			ps.setString(10, diretor.getCep());
+			ps.setString(11, diretor.getTelefone());
+			ps.setString(12, diretor.getEmail());
+//			ps.setString(13, diretor.getUsuario());
+//			ps.setString(14, diretor.getSenha());
+//			ps.setString(15, diretor.getPerfil());
+			ps.setLong(16, diretor.getCodDiretor());
+
+			ps.executeUpdate();
+			return true;
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
+			return false;
+		}
+	}
+
+	public static boolean excluir(Long idPessoa) {
+
+		final Connection con = ConnectionFactory.getConnectionFactory().getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			StringBuilder sql = new StringBuilder();
+			sql.append(" DELETE ");
+			sql.append(" FROM ");
+			sql.append("   pessoa ");
+			sql.append(" WHERE ");
+			sql.append("   id_pessoa = ? ");
+			sql.append(" ; ");
+			ps = con.prepareStatement(sql.toString());
+			ps.setLong(1, idPessoa);
+
+			ps.execute();
+			return true;
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			Logger.getLogger(DiretorDao.class.getName()).log(Level.SEVERE, null, ex);
+			return false;
+		}
+
+	}
+
 }

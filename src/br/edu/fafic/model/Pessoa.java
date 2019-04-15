@@ -13,12 +13,8 @@ public abstract class Pessoa {
 	private String email;
 	private boolean excluido;
 
-	public Pessoa() {
-		
-	}
 	public Pessoa(Long codPessoa, String nome, String sexo, String cpf, String rg, Endereco endereco, Login login,
 			String telefone, String email, boolean excluido) {
-		super();
 		this.codPessoa = codPessoa;
 		this.nome = nome;
 		this.sexo = sexo;
@@ -33,7 +29,6 @@ public abstract class Pessoa {
 
 	public Pessoa(String nome, String sexo, String cpf, String rg, Endereco endereco, Login login, String telefone,
 			String email, boolean excluido) {
-		super();
 		this.nome = nome;
 		this.sexo = sexo;
 		this.cpf = cpf;
@@ -45,6 +40,9 @@ public abstract class Pessoa {
 		this.excluido = excluido;
 	}
 
+	Pessoa(){
+		
+	}
 	public Long getCodPessoa() {
 		return codPessoa;
 	}

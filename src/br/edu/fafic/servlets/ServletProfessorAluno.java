@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.edu.fafic.servlets;
 
 import br.edu.fafic.dao.DiretorDao;
@@ -40,15 +35,15 @@ public class ServletProfessorAluno extends HttpServlet {
             String perfil = req.getParameter("perfil");
             String type = req.getParameter("param");
             if (type.equalsIgnoreCase("cadastrar")) {
-                pessoa = new Pessoa(nome, "", sexo, cpf, logradouro, numero, bairro, complemento, cidade, cep, telefone, email, perfil, usuario, senha);
-                dao.cadastraPessoa(pessoa);
+//                pessoa = new Pessoa(nome, "", sexo, cpf, logradouro, numero, bairro, complemento, cidade, cep, telefone, email, perfil, usuario, senha);
+//                dao.cadastraPessoa(pessoa);
             } else if (type.equalsIgnoreCase("editar")) {
                 Long id = Long.valueOf(req.getParameter("id_pessoa"));
-                pessoa = new Pessoa(id, nome, "", sexo, cpf, logradouro, numero, bairro, complemento, cidade, cep, telefone, email, perfil, usuario, senha);
-                dao.updatePessoa(pessoa);
+//                pessoa = new Pessoa(id, nome, "", sexo, cpf, logradouro, numero, bairro, complemento, cidade, cep, telefone, email, perfil, usuario, senha);
+//                dao.updatePessoa(pessoa);
             } else if (type.equalsIgnoreCase("excluir")) {
                 Long id = Long.valueOf(req.getParameter("id_pessoa"));
-                dao.excluir(id);
+//                dao.excluir(id);
             }
         } catch (Exception ex) {
 
