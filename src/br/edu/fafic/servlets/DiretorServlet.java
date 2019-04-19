@@ -3,6 +3,7 @@ package br.edu.fafic.servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,9 +25,11 @@ public class DiretorServlet extends HttpServlet {
 		Diretor diretor = null;
 		Endereco endereco = null;
 		Login login = null;
-
+		List<Diretor> diretores = DiretorDao.getAll();
+		req.setAttribute("diretores", diretores);//(identificador , valor(lista))
+		req.getRequestDispatcher("inicio.jsp").forward(req, resp);
 		try {
-
+			
 			String nome = req.getParameter("nome");
 			String sexo = req.getParameter("sexo");
 			String cpf = req.getParameter("cpf");

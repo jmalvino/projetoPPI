@@ -200,14 +200,16 @@
                 <img class="plus" src="../imagens/seta.png"  alt="plus" />
             </div>
             <div class="content">                
-                <a href=""><img style ="color: white;" src="" alt="Gerenciar Cursos da Instituição"/></a><br><br>
+                <a href="./curso/indexCurso.jsp"><img style ="color: white;" src="" alt="Gerenciar Cursos da Instituição"/></a><br><br>
                 <a href="cadastroCoordenador.jsp"><img style ="color: white;"src="" alt="Gerenciar Coordenadores"/></a><br><br>
                 <a href="vestibular/indexVestibular.jsp"><img style ="color: white;" src="" alt="Gerenciar Vestibular"/></a><br><br>
                 <a href=""><img style ="color: white;" src="" alt="Lista de Professores e Alunos"/></a><br><br>
             </div>
             <div class="circle"></div>
         </section>
-
+	<form action="cadDiretor"> 
+	<input type="submit" value="enviar">
+	</form>
 
         <script src='https://static.codepen.io/assets/common/stopExecutionOnTimeout-de7e2ef6bfefd24b79a3f68b414b87b8db5b08439cac3f1012092b2290c719cd.js'>
         </script><script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>

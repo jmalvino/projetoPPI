@@ -12,9 +12,7 @@
 <style>
 @
 use postcss-cssnext ;
-	/* config.css */
-
-        :root { -
+	/* config.css */ :root { -
 	-baseColor: #606468;
 }
 
@@ -267,17 +265,17 @@ div.center-form>form {
 			<div class="form__field">
 				<label for="login__username"><svg class="icon">
 						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use></svg><span
-					class="hidden">Username</span></label> <input id="login__username"
-					type="text" name="usuario" class="form__input"
+					class="hidden">Username</span></label>
+					 <input id="login__username" type="text" name="usuario" class="form__input"
 					placeholder="Digite seu usuário" required>
 			</div>
 
 			<div class="form__field">
 				<label for="login__password"><svg class="icon">
 						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use></svg><span
-					class="hidden">Password</span></label> <input id="login__password"
-					type="password" name="senha" class="form__input"
-					placeholder="Password" required>
+					class="hidden">Password</span></label> 
+					<input id="login__password"	type="password" name="senha" class="form__input"
+					placeholder="Senha" required>
 			</div>
 
 			<div class="form__field">

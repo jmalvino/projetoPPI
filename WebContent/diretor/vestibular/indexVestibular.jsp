@@ -1,10 +1,7 @@
-<%-- 
-    Document   : index
-    Created on : 20/03/2019, 13:38:41
-    Author     : kamyr
---%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!DOCTYPE html>
 <html>
     <head>

@@ -136,6 +136,8 @@ public class DiretorDao {
 		} finally {
 			ConnectionFactory.closeConnection(con, ps, rs);
 		}
+		System.out.println(diretores.toString());
+		
 		return diretores;
 	}
 

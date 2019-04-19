@@ -217,8 +217,9 @@
 
 	<br />
 
-	<%
-		List<Diretor> diretores = DiretorDao.getAll();
+
+	<% 
+    	List<Diretor> diretores = (List<Diretor>) request.getAttribute("diretores");
 	%>
 
 	<div class="panel panel-primary">
@@ -247,9 +248,9 @@
 		</tr>
 
 		<tr>
-			<c:forEach items="${diretor}" var="d">
+			<c:forEach  items="${diretores}" var="d" >
 				<br />
-				<td>Cod: ${d.codDiretor}</td>
+				<td>Cod:${d.codDiretor} </td>
 				<td>Nome: ${d.nome}</td>
 				<td>Sexo: ${d.sexo}</td>
 				<td>CPF: ${d.cpf}</td>
@@ -278,10 +279,9 @@
 			<td><a href="edit.jsp?id_pessoa=${d.codDiretor}"> <img
 					src="imagens/edit.png" />
 			</a></td>
-			<td><a href="javascript://"
-				onclick="excluir(${d.codDiretor}, '${d.nome}')"> <img
-					src="imagens/lixo.png" />
-			</a></td>
+<%-- 			<td><a href="javascript://" onclick="excluir(${d.codDiretor}, '${d.nome}')"> <img --%>
+<!-- 					src="imagens/lixo.png" /> -->
+<!-- 			</a></td> -->
 		</tr>
 	</table>
 </div>
